@@ -8,7 +8,7 @@ module Seeye
     def run(args)
       raise "Usage: seeye SOURCE_BLOB_URL" if args.empty?
 
-      with_app_setup(args.first) do |app_setup|
+      with_one_off_app(args.first) do |app_setup|
         build_output_stream_url = wait_for_build_to_start(app_setup["id"])
         stream_build_output(build_output_stream_url)
         wait_for_build_to_finish(app_setup["id"])
@@ -54,7 +54,9 @@ module Seeye
       puts
     end
 
-    def with_app_setup(source_blob)
+    def with_one_off_app(source_blob)
+      # There's no concept of one-off app
+      # Here we create one and delete it after
       app_setup = heroku.app_setup.create(app_json(source_blob))
       app_id = app_setup["app"]["id"]
       puts "Creating one-off app..."
